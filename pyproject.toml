@@ -23,7 +23,6 @@ usage:
 export FLASK_RUN_HOST=0.0.0.0 FLASK_RUN_PORT=8080 FLASK_BASE_DIR='/home' ; flask --app main --no-debug run
 ```
 """
-# readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -34,9 +33,17 @@ dependencies = [
   "flask>=2.3.2"
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest"
+]
+
 [project.urls]
 "Homepage" = "https://github.com/pypa/micro_file_server"
 "Bug Tracker" = "https://github.com/pypa/micro_file_server/issues"
 
 [project.scripts]
-mfs = micro_file_server.main:main
+mfs = "micro_file_server.__main__:main"
+
+# [pytest]
+# testpaths = "test"
