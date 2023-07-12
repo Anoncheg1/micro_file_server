@@ -34,7 +34,7 @@
     <tr><th colspan="4"><hr></th></tr> <!-- line -->
 </table>
 
-{% if uploading == "True" %}
+{% if uploading == True %}
 <h1>Upload New File</h1>
 <form action="/upload" method=post enctype=multipart/form-data>
     <p><input type=file name=file>
