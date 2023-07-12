@@ -146,10 +146,11 @@ def dir_listing(req_path):
     # Check if path is a file and serve
     if os.path.isfile(abs_path):
         if SMALL_TEXT_DO_NOT_DOWNLOAD and os.path.getsize(abs_path) < 1024*1024:
+            # hack for Mozilla Firefox to open text file without downloading
             try:
                 r = detect_mimetypes_file_command(abs_path)
-                if r.startswith('text/x-shellscript'):
-                    r = r.replace('text/x-shellscript', 'text/plain')
+                if r.startswith('text/x-shellscript') or r.startswith('text/x-script'):
+                    r = ";".join('text/plain', r.split(";")[1])
             except:
                 r = detect_mimetypes_smalltext(abs_path)
             finally:
@@ -191,21 +192,21 @@ def dir_listing(req_path):
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if UPLOADING_ENABLED != True:
-        return abort(Response('Uploading disabled', 501))
+        return abort(Response('Uploading disabled.', 501))
     # secure save path for file, remove first "/" character
     save_path = os.path.normpath(request.form['location'][1:]).replace('../', '/')
     save_path = os.path.normpath(os.path.join(BASE_DIR, save_path)).replace('../', '/')
 
     if not os.path.isdir(save_path):
-        return abort(Response('Wrong save path', 400))
+        return abort(Response('Wrong save path.', 400))
 
     if 'file' not in request.files:
-        return abort(Response('No file part', 400))
+        return abort(Response('No file part.', 400))
     file = request.files['file']
     # If the user does not select a file, the browser submits an
     # empty file without a filename.
     if file.filename == '':
-        return abort(Response('No selected file', 400))
+        return abort(Response('No selected file.', 400))
 
     # prepare filename to save file
     filename = secure_filename(file.filename)

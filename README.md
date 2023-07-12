@@ -1,25 +1,27 @@
 
 # Table of Contents
 
-1.  [Description](#org99acf23)
-2.  [Features:](#org96f4bed)
-3.  [Dependencies](#org5cd6fa8)
-4.  [Usage](#org4fda8e7)
-5.  [Screenshot](#org8ad07d9)
+1.  [Description](#org123a450)
+2.  [Features:](#org4e37874)
+3.  [Dependencies](#org921980d)
+4.  [Usage](#org5115948)
+5.  [Screenshot](#org956c053)
 
 -**- mode: Org; coding: utf-8; -**-
 
 \#+TITLE micro-file-server
 
 
-<a id="org99acf23"></a>
+<a id="org123a450"></a>
 
 # Description
 
 The micro autoindex and file hosting server with one Flask framework dependence.
 
+This allow to transfer files between systems very easy and safely.
 
-<a id="org96f4bed"></a>
+
+<a id="org4e37874"></a>
 
 # Features:
 
@@ -32,7 +34,7 @@ The micro autoindex and file hosting server with one Flask framework dependence.
 -   optional ability to prevent downloading of small files to use browser as a text reader.
 
 
-<a id="org5cd6fa8"></a>
+<a id="org921980d"></a>
 
 # Dependencies
 
@@ -43,7 +45,7 @@ Flask >= 2.3.2
 Lower version may work as well.
 
 
-<a id="org4fda8e7"></a>
+<a id="org5115948"></a>
 
 # Usage
 
@@ -60,7 +62,7 @@ Here is defaults, that you can change:
     export FLASK_FLASK_UPLOADING_ENABLED=True
 
 
-<a id="org8ad07d9"></a>
+<a id="org956c053"></a>
 
 # Screenshot
 

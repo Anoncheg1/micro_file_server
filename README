@@ -5,6 +5,8 @@
 * Description
 The micro autoindex and file hosting server with one Flask framework dependence.
 
+This allow to transfer files between systems very easy and safely.
+
 * Features:
 - ftp-like design
 - ability to uplaod file
