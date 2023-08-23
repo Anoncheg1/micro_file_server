@@ -20,6 +20,7 @@ app.jinja_env.filters['path_join'] = os.path.join
 # use $ export FLASK_BASE_DIR='/home' ; flask --app main --no-debug run
 ##########################
 BASE_DIR = os.environ.get('FLASK_BASE_DIR', os.getcwd()) # current directory by default
+app.logger.info("BASE_DIR: " + BASE_DIR)
 FILENAME_MAX_LENGTH = os.environ.get('FLASK_FILENAME_MAX_LENGTH', 40)
 MIMETYPE_RECOGNITION = os.environ.get('FLASK_MIMETYPE_RECOGNITION', True)
 SMALL_TEXT_DO_NOT_DOWNLOAD = os.environ.get('FLASK_SMALL_TEXT_DO_NOT_DOWNLOAD', True)
