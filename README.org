@@ -1,6 +1,4 @@
-#+TITLE micro-file-server
-
-* Description
+* micro-file-server
 The micro autoindex and file hosting server with one Flask framework dependence.
 
 * Features:
