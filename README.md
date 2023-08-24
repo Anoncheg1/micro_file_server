@@ -7,8 +7,6 @@
 4.  [Usage](#org0fa2131)
 5.  [Screenshot](#orgb47cec7)
 
--**- mode: Org; coding: utf-8; -**-
-
 # Description
 
 The micro autoindex and file hosting server with one Flask framework dependence.

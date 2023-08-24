@@ -5,24 +5,12 @@ build-backend = "hatchling.build"
 [project]
 name = "micro_file_server"
 readme = "README.md"
-version = "0.0.7"
+version = "0.0.8"
 authors = [
   { name="Anoncheg1" }
 ]
-description = """The micro autoindex and file hosting server with one Flask framework dependence.
-- ftp-like design
-- ability to uplaod file
-- protection from folder escaping
-- size calculation
-- configuration with enironmental variables
-- optional basic file type recognition: text, image, video
-- optional ability to prevent downloading of small files to use browser as a text reader.
-
-usage:
-```
-export FLASK_RUN_HOST=0.0.0.0 FLASK_RUN_PORT=8080 FLASK_BASE_DIR='/home' ; flask --app main --no-debug run
-```
-"""
+description = """The micro autoindex and file hosting server with one Flask framework dependence,
+with ability to upload files."""
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
