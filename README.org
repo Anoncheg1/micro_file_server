@@ -1,5 +1,3 @@
--*- mode: Org; coding: utf-8; -*-
-
 #+TITLE micro-file-server
 
 * Description
