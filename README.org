@@ -35,4 +35,4 @@ export FLASK_SMALL_TEXT_ENCODING="utf-8"
 export FLASK_FLASK_UPLOADING_ENABLED=True
 #+end_src
 * Screenshot
-[[file:Screenshot.png]]
+[[file:https://github.com/Anoncheg1/micro_file_server/raw/main/Screenshot.png]]
