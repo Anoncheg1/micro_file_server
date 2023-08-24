@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "micro_file_server"
 readme = "README.md"
-version = "0.0.3"
+version = "0.0.4"
 authors = [
   { name="Anoncheg1" }
 ]
@@ -39,8 +39,8 @@ test = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/pypa/micro_file_server"
-"Bug Tracker" = "https://github.com/pypa/micro_file_server/issues"
+"Homepage" = "https://github.com/Anoncheg1/micro_file_server"
+"Bug Tracker" = "https://github.com/Anoncheg1/micro_file_server/issues"
 
 [project.scripts]
 mfs = "micro_file_server.__main__:main"

@@ -9,21 +9,13 @@
 
 -**- mode: Org; coding: utf-8; -**-
 
-\#+TITLE micro-file-server
-
-
-<a id="orgd1e733e"></a>
-
 # Description
 
 The micro autoindex and file hosting server with one Flask framework dependence.
 
-This allow to transfer files between systems very easy and safely.
-
-
-<a id="org58f5941"></a>
-
 # Features:
+
+Allow to transfer files between systems easily and safely.
 
 -   ftp-like design
 -   ability to uplaod file
@@ -34,8 +26,6 @@ This allow to transfer files between systems very easy and safely.
 -   optional ability to prevent downloading of small files to use browser as a text reader.
 
 
-<a id="orgb5d14b0"></a>
-
 # Dependencies
 
 Python version >= 3.10
@@ -43,9 +33,6 @@ Python version >= 3.10
 Flask >= 2.3.2
 
 Lower version may work as well.
-
-
-<a id="org0fa2131"></a>
 
 # Usage
 
@@ -68,4 +55,4 @@ Here is defaults, that you can change:
 
 # Screenshot
 
-![img](Screenshot.png)
+![](https://github.com/Anoncheg1/micro_file_server/raw/main/Screenshot.png)
