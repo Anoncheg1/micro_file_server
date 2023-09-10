@@ -2,6 +2,7 @@ import os
 import datetime
 import mimetypes
 import subprocess
+import argparse
 from flask import Flask, Response
 from flask import render_template
 from flask import abort
@@ -37,7 +38,7 @@ IMAGE_UNICODE_TEXT = b'\xF0\x9F\x97\x92'.decode('utf8') # U+1F5D2
 
 
 class OFile:
-    """ input for jinja template """
+    """Create input object for jinja template."""
     def __init__(self, filename, image, size, last_modified):
         self.filename = filename
         self.image = image
@@ -53,7 +54,7 @@ class OFile:
 
 
 def detect_mimetypes_smalltext(abs_path) -> None or str:
-    """ used to return small text files """
+    """Return mimetype for small text files or None otherwise."""
     ftype = mimetypes.guess_type(abs_path)[0]
     if ftype is None:
         return None
@@ -63,7 +64,7 @@ def detect_mimetypes_smalltext(abs_path) -> None or str:
 
 
 def detect_mimetypes_file_command(abs_path) -> None or str:
-    """ used to return small text files and to detect text files """
+    """Return small text files and to detect text files."""
     r = subprocess.run(["file", "-ib", abs_path], capture_output=True)
     if r.returncode != 0:
         return None
@@ -75,7 +76,7 @@ def detect_mimetypes_file_command(abs_path) -> None or str:
 
 
 def get_filetype_images(abs_path, files):
-    """ list of unicode characters to describe file type """
+    """List of unicode characters to describe file type."""
 
     for i, n in enumerate(files):
         img = ''
@@ -220,7 +221,13 @@ def upload_file():
     return redirect(request.form['location'])
 
 def main():
-    app.run(host='0.0.0.0', port=8080, debug=False)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--port", action="store", default="8080")
+    parser.add_argument("--host", action="store", default="0.0.0.0")
+    args = parser.parse_args()
+    port = int(args.port)
+    host = str(args.host)
+    app.run(host=host, port=port, debug=False)
     return 0
 
 if __name__=="__main__":
