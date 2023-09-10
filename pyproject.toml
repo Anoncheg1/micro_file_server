@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "micro_file_server"
 readme = "README.md"
-version = "0.0.8"
+version = "0.0.9"
 authors = [
   { name="Anoncheg1" }
 ]
