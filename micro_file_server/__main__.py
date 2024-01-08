@@ -65,6 +65,9 @@ def detect_mimetypes_smalltext(abs_path) -> None or str:
 
 def detect_mimetypes_file_command(abs_path) -> None or str:
     """Return small text files and to detect text files."""
+    # additional safely check
+    if not os.path.exists(abs_path):
+        return None
     r = subprocess.run(["file", "-ib", abs_path], capture_output=True)
     if r.returncode != 0:
         return None
