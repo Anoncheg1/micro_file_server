@@ -32,7 +32,7 @@ Allow to transfer files between systems easily and safely.
 
 Python version >= 3.10
 
-Flask >= 2.3.2
+Flask >= 2.3.2 ``` pip install flask ```
 
 Lower version may work as well.
 
