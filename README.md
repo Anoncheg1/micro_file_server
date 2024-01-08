@@ -10,6 +10,7 @@
 # Description
 
 The micro autoindex and file hosting server with one Flask framework dependence.
+HTTP server that allow to download and upload files.
 
 # Features:
 
@@ -54,3 +55,6 @@ Here is defaults, that you can change:
 # Screenshot
 
 ![](https://github.com/Anoncheg1/micro_file_server/raw/main/Screenshot.png)
+
+# Keywords
+Filesharing, fileserver, httpserver, microhttp.
