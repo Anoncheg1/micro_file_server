@@ -12,6 +12,8 @@
 The micro autoindex and file hosting server with one Flask framework dependence.
 HTTP server that allow to download and upload files.
 
+<a id="org58f5941"></a>
+
 # Features:
 
 Allow to transfer files between systems easily and safely.
@@ -24,6 +26,7 @@ Allow to transfer files between systems easily and safely.
 -   optional basic file type recognition: text, image, audio, video
 -   optional ability to prevent downloading of small files to use browser as a text reader.
 
+<a id="org58f5941"></a>
 
 # Dependencies
 
@@ -32,6 +35,8 @@ Python version >= 3.10
 Flask >= 2.3.2
 
 Lower version may work as well.
+
+<a id="org0fa2131"></a>
 
 # Usage
 
@@ -49,6 +54,10 @@ Here is defaults, that you can change:
     export FLASK_SMALL_TEXT_ENCODING="utf-8"
     export FLASK_FLASK_UPLOADING_ENABLED=True
 
+
+Built-in web server is secure enough, but to execute with ``` pip install gunicorn ```
+
+    gunicorn micro_file_server.__main__:app
 
 <a id="orgb47cec7"></a>
 
