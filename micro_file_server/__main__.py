@@ -28,6 +28,7 @@ import datetime
 import mimetypes
 import subprocess
 import argparse
+from typing import Iterator
 from flask import Flask, Response
 from flask import render_template
 from flask import abort
@@ -46,7 +47,7 @@ app.jinja_env.filters['path_join'] = os.path.join
 # use $ export FLASK_BASE_DIR='/home' ; flask --app main --no-debug run
 ##########################
 BASE_DIR = os.environ.get('FLASK_BASE_DIR', os.getcwd())  # current directory by default
-app.logger.info("BASE_DIR: " + BASE_DIR)
+app.logger.info("BASE_DIR: %s", BASE_DIR)
 FILENAME_MAX_LENGTH = os.environ.get('FLASK_FILENAME_MAX_LENGTH', 40)
 MIMETYPE_RECOGNITION = os.environ.get('FLASK_MIMETYPE_RECOGNITION', True)
 SMALL_TEXT_DO_NOT_DOWNLOAD = os.environ.get('FLASK_SMALL_TEXT_DO_NOT_DOWNLOAD', True)
@@ -69,7 +70,7 @@ class OFile:
         self.image = image
         self.size = size
         self.last_modified = last_modified
-        self.folder_flag = True if image == IMAGE_UNICODE_FOLDER else False
+        self.folder_flag = image == IMAGE_UNICODE_FOLDER
         # short name
         if len(filename) > FILENAME_MAX_LENGTH - 5:
             self.shortname = filename[:(FILENAME_MAX_LENGTH//2)] \
@@ -88,28 +89,32 @@ def detect_mimetypes_smalltext(abs_path) -> None or str:
     return 'text/plain; charset=' + SMALL_TEXT_ENCODING
 
 
-def detect_mimetypes_file_command(abs_path) -> None or str:
+def detect_mimetypes_file_command(abs_path: str) -> None | str:
     """Return small text files and to detect text files."""
     # additional safely check
     if not os.path.exists(abs_path):
         return None
-    r = subprocess.run(["file", "-ib", abs_path], capture_output=True)
-    if r.returncode != 0:
+    try:
+        r = subprocess.run(["file", "-ib", abs_path], capture_output=True,
+                       check=True)
+    except (FileNotFoundError, subprocess.CalledProcessError) as e:
+        app.logger.exception("Error occurred while executing file"
+                             " command on file: %s. %s", abs_path,  e)
         return None
+
     res = r.stdout.decode('ascii').strip()
     if "text/" in res:
         return res
-    else:
-        return None
+    return None
 
 
-def get_filetype_images(abs_path, files):
+def get_filetype_images(abs_path, files) -> Iterator[str]:
     """List of unicode characters to describe file type."""
 
-    for i, n in enumerate(files):
+    for fn in files:
         img = ''
         # for dirs
-        fp = os.path.join(abs_path, n)
+        fp = os.path.join(abs_path, fn)
         if os.path.islink(fp):
             img = IMAGE_UNICODE_LINK
         elif os.path.isdir(fp):
@@ -135,17 +140,19 @@ def get_filetype_images(abs_path, files):
         yield img
 
 
-def get_last_modified(abs_path, files):
+def get_last_modified(abs_path, files) -> Iterator[str]:
+    "Get mtime of files."
     for f in files:
-        modTimesinceEpoc = os.path.getmtime(os.path.join(abs_path, f))
-        yield datetime.datetime.fromtimestamp(modTimesinceEpoc).strftime('%Y-%m-%d %H:%M:%S')
+        mtime_since_epoch = os.path.getmtime(os.path.join(abs_path, f))
+        yield datetime.datetime.fromtimestamp(mtime_since_epoch).strftime('%Y-%m-%d %H:%M:%S')
 
 
 _SZ_UNITS = ['Byte', 'KB', 'MB', 'GB']
 
 
-def get_sizes(abs_path, files):
-    for i, name in enumerate(files):
+def get_sizes(abs_path, files) -> Iterator[str]:
+    "Get size of file as a string with: Byte, KB, MB, GB suffix."
+    for name in files:
         p = os.path.join(abs_path, name)
         # for dirs
         if not os.path.isdir(p):
@@ -154,7 +161,7 @@ def get_sizes(abs_path, files):
             while sz > 1024:
                 sz = sz / 1024
                 unit_idx += 1
-            size = '{:g} {}'.format(round(sz, 3), _SZ_UNITS[unit_idx])
+            size = f"{round(sz, 3)} {_SZ_UNITS[unit_idx]}"
         else:
             size = '-'
         yield size
@@ -163,6 +170,7 @@ def get_sizes(abs_path, files):
 @app.route('/', defaults={'req_path': ''})
 @app.route('/<path:req_path>')
 def dir_listing(req_path):
+    "List files in directory for HTTP GET request."
     # Joining the base and the requested path
     abs_path = os.path.join(BASE_DIR, os.path.normpath(req_path))
 
@@ -180,18 +188,18 @@ def dir_listing(req_path):
             try:
                 r = detect_mimetypes_file_command(abs_path)
                 if r.startswith('text/x-shellscript') or r.startswith('text/x-script'):
-                    r = ";".join('text/plain', r.split(";")[1])
+                    r = "text/plain; " + r.split(";")[1]
             except:  # noqa
                 r = detect_mimetypes_smalltext(abs_path)
-            finally:
-                if r is not None:
-                    response = make_response(send_file(abs_path))
-                    response.headers['content-type'] = r
-                    return response
-                else:
-                    return send_file(abs_path)
-        else:
-            return send_file(abs_path)
+
+            if r is None:
+                return send_file(abs_path)
+
+            response = make_response(send_file(abs_path))
+            response.headers['content-type'] = r
+            return response
+
+        return send_file(abs_path)
 
     # prepare list of files in directory
     filenames = os.listdir(abs_path)
@@ -221,6 +229,7 @@ def dir_listing(req_path):
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    "Accept file for uploading from HTTP form."
     if UPLOADING_ENABLED is not True:
         return abort(Response('Uploading disabled.', 501))
     # secure save path for file, remove first "/" character
@@ -250,6 +259,7 @@ def upload_file():
 
 
 def main():
+    "Run Flask with"
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--port", action="store", default="8080")
     parser.add_argument("--host", action="store", default="0.0.0.0")
