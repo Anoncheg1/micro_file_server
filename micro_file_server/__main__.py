@@ -20,7 +20,7 @@ app.jinja_env.filters['path_join'] = os.path.join
 # FLASK_* configurations,
 # use $ export FLASK_BASE_DIR='/home' ; flask --app main --no-debug run
 ##########################
-BASE_DIR = os.environ.get('FLASK_BASE_DIR', os.getcwd()) # current directory by default
+BASE_DIR = os.environ.get('FLASK_BASE_DIR', os.getcwd())  # current directory by default
 app.logger.info("BASE_DIR: " + BASE_DIR)
 FILENAME_MAX_LENGTH = os.environ.get('FLASK_FILENAME_MAX_LENGTH', 40)
 MIMETYPE_RECOGNITION = os.environ.get('FLASK_MIMETYPE_RECOGNITION', True)
@@ -28,13 +28,13 @@ SMALL_TEXT_DO_NOT_DOWNLOAD = os.environ.get('FLASK_SMALL_TEXT_DO_NOT_DOWNLOAD', 
 SMALL_TEXT_ENCODING = os.environ.get('FLASK_SMALL_TEXT_ENCODING', 'utf-8')
 UPLOADING_ENABLED = os.environ.get('FLASK_UPLOADING_ENABLED', True)
 
-IMAGE_UNICODE_FOLDER = b'\xF0\x9F\x93\x81'.decode('utf8') # U+1F4C1
-IMAGE_UNICODE_FOLDER_OPEN = b'\xF0\x9F\x93\x82'.decode('utf8') # U+1F4C2
-IMAGE_UNICODE_LINK = b'\xF0\x9F\x94\x97'.decode('utf8') # U+1F517
-IMAGE_UNICODE_IMAGE = b'\xF0\x9F\x96\xBC'.decode('utf8') # U+1F5BC
-IMAGE_UNICODE_VIDEO = b'\xF0\x9F\x8E\xA5'.decode('utf8') # U+1F3A5
-IMAGE_UNICODE_AUDIO = b'\xF0\x9F\x8E\xA7'.decode('utf8') # U+1F3A7
-IMAGE_UNICODE_TEXT = b'\xF0\x9F\x97\x92'.decode('utf8') # U+1F5D2
+IMAGE_UNICODE_FOLDER = b'\xF0\x9F\x93\x81'.decode('utf8')  # U+1F4C1
+IMAGE_UNICODE_FOLDER_OPEN = b'\xF0\x9F\x93\x82'.decode('utf8')  # U+1F4C2
+IMAGE_UNICODE_LINK = b'\xF0\x9F\x94\x97'.decode('utf8')  # U+1F517
+IMAGE_UNICODE_IMAGE = b'\xF0\x9F\x96\xBC'.decode('utf8')  # U+1F5BC
+IMAGE_UNICODE_VIDEO = b'\xF0\x9F\x8E\xA5'.decode('utf8')  # U+1F3A5
+IMAGE_UNICODE_AUDIO = b'\xF0\x9F\x8E\xA7'.decode('utf8')  # U+1F3A7
+IMAGE_UNICODE_TEXT = b'\xF0\x9F\x97\x92'.decode('utf8')  # U+1F5D2
 
 
 class OFile:
@@ -48,7 +48,7 @@ class OFile:
         # short name
         if len(filename) > FILENAME_MAX_LENGTH - 5:
             self.shortname = filename[:(FILENAME_MAX_LENGTH//2)] \
-            + ' ... ' + filename[-(FILENAME_MAX_LENGTH // 2 - 1):]
+                + ' ... ' + filename[-(FILENAME_MAX_LENGTH // 2 - 1):]
         else:
             self.shortname = filename
 
@@ -126,7 +126,7 @@ def get_sizes(abs_path, files):
             while (sz > 1024):
                 sz = sz / 1024
                 unit_idx += 1
-            size = '{:g} {}'.format(round(sz,3), _SZ_UNITS[unit_idx])
+            size = '{:g} {}'.format(round(sz, 3), _SZ_UNITS[unit_idx])
         else:
             size = '-'
         yield size
@@ -153,7 +153,7 @@ def dir_listing(req_path):
                 r = detect_mimetypes_file_command(abs_path)
                 if r.startswith('text/x-shellscript') or r.startswith('text/x-script'):
                     r = ";".join('text/plain', r.split(";")[1])
-            except:
+            except:  # noqa
                 r = detect_mimetypes_smalltext(abs_path)
             finally:
                 if r is not None:
@@ -193,7 +193,7 @@ def dir_listing(req_path):
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    if UPLOADING_ENABLED != True:
+    if UPLOADING_ENABLED is not True:
         return abort(Response('Uploading disabled.', 501))
     # secure save path for file, remove first "/" character
     save_path = os.path.normpath(request.form['location'][1:]).replace('../', '/')
@@ -220,6 +220,7 @@ def upload_file():
     file.save(save_file)
     return redirect(request.form['location'])
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--port", action="store", default="8080")
@@ -230,5 +231,6 @@ def main():
     app.run(host=host, port=port, debug=False)
     return 0
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
