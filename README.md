@@ -1,3 +1,4 @@
+![badge](https://github.com/Anoncheg1/micro_file_server/actions/workflows/python-publish.yml/badge.svg?event=release)
 
 # Table of Contents
 
