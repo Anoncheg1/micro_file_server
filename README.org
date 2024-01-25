@@ -22,6 +22,8 @@ Lower version may work as well.
 export FLASK_RUN_HOST=0.0.0.0 FLASK_RUN_PORT=8080
 export FLASK_BASE_DIR='/home/user'
 flask --app micro_file_server/__main__ run --host=0.0.0.0
+# or for HTTPS:
+flask --app micro_file_server/__main__ run --host=0.0.0.0 --cert=adhoc
 # or
 python micro_file_server/__main__.py
 #+end_src
