@@ -53,6 +53,7 @@ MIMETYPE_RECOGNITION = os.environ.get('FLASK_MIMETYPE_RECOGNITION', True)
 SMALL_TEXT_DO_NOT_DOWNLOAD = os.environ.get('FLASK_SMALL_TEXT_DO_NOT_DOWNLOAD', True)
 SMALL_TEXT_ENCODING = os.environ.get('FLASK_SMALL_TEXT_ENCODING', 'utf-8')
 UPLOADING_ENABLED = os.environ.get('FLASK_UPLOADING_ENABLED', True)
+HIDE_HIDDEN = os.environ.get('FLASK_HIDE_HIDDEN', True)
 
 IMAGE_UNICODE_FOLDER = b'\xF0\x9F\x93\x81'.decode('utf8')  # U+1F4C1
 IMAGE_UNICODE_FOLDER_OPEN = b'\xF0\x9F\x93\x82'.decode('utf8')  # U+1F4C2
@@ -175,6 +176,14 @@ def dir_listing(req_path):
     abs_path = os.path.join(BASE_DIR, os.path.normpath(req_path))
 
     if os.path.islink(abs_path):
+        return abort(Response('Links downloading and navigation disabled for security considerations.', 400))
+
+    path_basename = os.path.basename(abs_path)
+
+    if HIDE_HIDDEN and path_basename != "." and path_basename.startswith("."):
+        return abort(Response('Hidden files and directories are disabled.', 400))
+
+    if os.path.islink(abs_path):
         return abort(Response('Links downloading disabled for security considerations.', 400))
 
     # Return 404 if path doesn't exist
@@ -184,7 +193,7 @@ def dir_listing(req_path):
     # Check if path is a file and serve
     if os.path.isfile(abs_path):
         if SMALL_TEXT_DO_NOT_DOWNLOAD and os.path.getsize(abs_path) < 1024*1024:
-            # hack for Mozilla Firefox to open text file without downloading
+            # hack for Mozilla Firefox to open text file with out downloading
             try:
                 r = detect_mimetypes_file_command(abs_path)
                 if r.startswith('text/x-shellscript') or r.startswith('text/x-script'):
@@ -203,6 +212,10 @@ def dir_listing(req_path):
 
     # prepare list of files in directory
     filenames = os.listdir(abs_path)
+
+    # filter hidden
+    if HIDE_HIDDEN:
+        filenames = [x for x in filenames if not x.startswith('.')]
 
     # get sizes, last modified and folder images
     fsizes = get_sizes(abs_path, filenames)
@@ -236,11 +249,15 @@ def upload_file():
     save_path = os.path.normpath(request.form['location'][1:]).replace('../', '/')
     save_path = os.path.normpath(os.path.join(BASE_DIR, save_path)).replace('../', '/')
 
+    if HIDE_HIDDEN and os.path.basename(save_path).startswith("."):
+        return abort(Response('Hidden directories are disabled.', 400))
+
     if not os.path.isdir(save_path):
         return abort(Response('Wrong save path.', 400))
 
     if 'file' not in request.files:
         return abort(Response('No file part.', 400))
+
     file = request.files['file']
     # If the user does not select a file, the browser submits an
     # empty file without a filename.
@@ -255,7 +272,7 @@ def upload_file():
         return abort(Response('File already exist. Abort!', 400))
     # save
     file.save(save_file)
-    return redirect(request.form['location'])
+    return redirect(request.form['location']) # 200
 
 
 def main():
@@ -263,10 +280,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--port", action="store", default="8080")
     parser.add_argument("--host", action="store", default="0.0.0.0")
+    parser.add_argument("--cert", action="store", default=None)
+    parser.add_argument("--key", action="store", default=None)
     args = parser.parse_args()
     port = int(args.port)
     host = str(args.host)
-    app.run(host=host, port=port, debug=False)
+    ssl_context=(args.cert, args.key) if args.cert and args.key else None
+    app.run(host=host, port=port, debug=False, ssl_context=ssl_context)
     return 0
 
 
