@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Release: exe, sourc and sourceforge
+name: "Release to exe, source and sourceforge"
 
 on:
   release:
