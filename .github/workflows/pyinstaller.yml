@@ -21,6 +21,7 @@ jobs:
           https://github.com/Anoncheg1/micro_file_server
         pwd
         ls ./*
+        ls ./micro_file_server/*
       # working-directory: micro_file_server
     - name: Set up Python
       uses: actions/setup-python@v3
