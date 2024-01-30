@@ -19,7 +19,9 @@ jobs:
         git clone --no-tags --no-recurse-submodules --depth=1 \
           --progress --single-branch --branch main \
           https://github.com/Anoncheg1/micro_file_server
-      working-directory: micro_file_server
+        pwd
+        ls ./*
+      # working-directory: micro_file_server
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
