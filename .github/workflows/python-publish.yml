@@ -9,12 +9,11 @@
 name: Upload Python Package
 
 on:
-  workflow_dispatch
-  # release:
-  #   types: [published]
+  release:
+    types: [published]
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
 jobs:
   deploy:
