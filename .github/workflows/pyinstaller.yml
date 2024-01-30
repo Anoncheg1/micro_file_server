@@ -17,7 +17,7 @@ jobs:
       shell: bash
       run: |
         git clone --no-tags --no-recurse-submodules --depth=1 \
-          --progress --single-branch main \
+          --progress --single-branch --branch main \
           https://github.com/Anoncheg1/micro_file_server
     - name: Set up Python
       uses: actions/setup-python@v3
