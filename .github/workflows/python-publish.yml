@@ -91,7 +91,7 @@ jobs:
           sha=${{ GITHUB.SHA }}
           gh release upload ${{ github.ref_name }} ./dist/micro-file-server-ubuntu ./dist/micro-file-server-ubuntu.sha512.txt
 
-  build-ubuntu:
+  build-macos:
     # runs-on: windows-2019
     # runs-on: ubuntu-latest
     runs-on: macos-latest
