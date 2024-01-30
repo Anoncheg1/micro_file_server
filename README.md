@@ -6,11 +6,12 @@
 2.  [Features:](#org58f5941)
 3.  [Dependencies](#orgb5d14b0)
 4.  [Usage](#org0fa2131)
+5.  [Default settings](#orgb47cec6)
 5.  [Screenshot](#orgb47cec7)
 
 # Description
 
-Crate Web server from current directory.
+Create Web server from current directory.
 
 HTTP server that allow to download and upload files.
 
@@ -30,7 +31,8 @@ Allow to transfer files between systems easily and safely.
 -   flexible configuration with enironmental variables
 -   optional basic file type recognition: text, image, audio, video
 -   optional ability to prevent downloading of small files to use browser as a text reader.
--   all in single file.
+-   hiding files and directories that starts with '.' dot character.
+-   all in a single file.
 
 <a id="org58f5941"></a>
 
@@ -66,7 +68,7 @@ or for HTTPS:
 
     gunicorn micro_file_server.__main__:app --bind 0.0.0.0:8080 --certfile=.cert/cert.pem --keyfile=.cert/key.pem
 
-<a id="orgb47cec7"></a>
+<a id="orgb47cec6"></a>
 
 # Defaults, that you can change:
 
@@ -77,6 +79,8 @@ or for HTTPS:
     export FLASK_FLASK_UPLOADING_ENABLED=True
     export FLASK_HIDE_HIDDEN=True
     export FLASK_ALLOW_REWRITE=True
+
+<a id="orgb47cec7"></a>
 
 # Screenshot
 

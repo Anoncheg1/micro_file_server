@@ -221,7 +221,7 @@ def get_sizes(abs_path, files) -> Iterator[str]:
             while sz > 1024:
                 sz = sz / 1024
                 unit_idx += 1
-            size = f"{round(sz, 3)} {_SZ_UNITS[unit_idx]}"
+            size = f"{round(sz, 1)} {_SZ_UNITS[unit_idx]}"
         else:
             size = '-'
         yield size
