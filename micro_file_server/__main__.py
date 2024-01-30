@@ -343,9 +343,9 @@ def main():
     parser.add_argument("--host", action="store", default="0.0.0.0",
                         help="IP address of the internet interface.")
     parser.add_argument("--cert", action="store", default=None,
-                        help="for ex: .cert/cert.pem")
+                        help="\"adhoc\" for dynamic TLS or path to file, for ex: .cert/cert.pem")
     parser.add_argument("--key", action="store", default=None,
-                        help="for ex: .cert/key.pem")
+                        help="Private key, for ex: .cert/key.pem")
     args = parser.parse_args()
     port = int(args.port)
     host = str(args.host)
