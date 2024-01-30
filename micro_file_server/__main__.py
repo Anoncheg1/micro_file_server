@@ -22,13 +22,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 import os
 import datetime
 import mimetypes
 import subprocess
 import argparse
 from typing import Iterator
+from tempfile import TemporaryDirectory
 from flask import Flask, Response
 from flask import render_template
 from flask import abort
@@ -38,7 +38,65 @@ from flask import request
 from flask import redirect
 from werkzeug.utils import secure_filename
 
-app = Flask(__name__, static_folder=None)
+#+begin_src html
+template_file_content = """
+{% set path = ( '' if request.path == '/' else request.path ) %}
+<table>
+    <tr> <!-- table header -->
+        <th valign="top">Name</th>
+        <th>Last modified</th>
+        <th>Size</th>
+    </tr>
+    <tr><th colspan="4"><hr></th></tr>  <!-- line -->
+
+    {% for f in files %}
+    <tr>
+        <td valign="top" align="left"> <!-- Name -->
+            {{f.image + ' ' }}
+            <a href="{{ path | path_join(f.filename) }}">
+                {{ (path | path_join('..') ) if f.shortname == '..' else f.shortname }}
+            </a>
+        </td>
+
+        <td align="right"> <!-- Last modified -->
+            {{ f.last_modified if f.last_modified else ''}}
+        </td>
+
+        <td align="right"> <!-- Size -->
+            {{ f.size if f.size else ''}}
+        </td>
+
+    </tr>
+    {% endfor %}
+
+    {% if not files %}
+    <td align="left"> No files </td>
+    {% endif %}
+
+    <tr><th colspan="4"><hr></th></tr> <!-- line -->
+</table>
+
+{% if uploading == True %}
+<h1>Upload New File</h1>
+<form action="/upload" method=post enctype=multipart/form-data>
+    <p><input type=file name=file>
+        <input type="hidden" name="location" value="{{request.path}}">
+        <input type=submit value=Upload>
+</form>
+{% endif %}
+"""
+#+end_src
+
+def save_template() -> TemporaryDirectory:
+    td = TemporaryDirectory()
+    template_file_path = os.path.join(td.name, "files.html")
+    with open(template_file_path, "w") as tf:
+        tf.write(template_file_content)
+    return td
+
+tmp_directory = save_template() # create tempalate_directory with html file
+
+app = Flask(__name__, static_folder=None, template_folder=tmp_directory.name)
 
 app.jinja_env.filters['path_join'] = os.path.join
 
@@ -288,6 +346,7 @@ def main():
     host = str(args.host)
     ssl_context=(args.cert, args.key) if args.cert and args.key else None
     app.run(host=host, port=port, debug=False, ssl_context=ssl_context)
+    tmp_directory.cleanup() # remove template directory with files.html
     return 0
 
 

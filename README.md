@@ -10,7 +10,7 @@
 
 # Description
 
-The micro autoindex and file hosting server with one Flask framework dependence.
+The micro autoindex and file hosting server with one Flask framework dependence in single file.
 HTTP server that allow to download and upload files.
 
 <a id="org58f5941"></a>
@@ -26,6 +26,7 @@ Allow to transfer files between systems easily and safely.
 -   configuration with enironmental variables
 -   optional basic file type recognition: text, image, audio, video
 -   optional ability to prevent downloading of small files to use browser as a text reader.
+-   all in single file.
 
 <a id="org58f5941"></a>
 
