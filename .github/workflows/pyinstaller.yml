@@ -9,27 +9,44 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-2019
 
     steps:
+    - name: Checkout
     - uses: actions/checkout@v3
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
         python-version: '3.x'
+        architecture: 'x64'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install build
-    - name: Build package
-      run: python -m build
-
-    - name: Package Application
-      uses: JackMcKew/pyinstaller-action-windows@main
+        pip install -r .github/requirements.txt
+        # idk what is build
+    - name: Create a Release
+      uses: elgohr/Github-Release-Action@v5
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        path: ./
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: name-of-artifact
-        path: dist/windows
+        title: MyReleaseMessage
+    # - name: create release
+    #     id: create_release
+    #     uses: actions/create-release@v1
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     with:
+    #       tag_name: ${{ github.event.head_commit.message }}
+    #       release_name: ${{ github.event.head_commit.message }}
+    #       overwrite: true
+    #       body: |
+    #         Test Release v1.0.0
+    #       draft: false
+    #       prerelease: false
+    # - name: Build package
+    #   run: python -m build
+    # - uses: actions/upload-artifact@v2
+    #   with:
+    #     name: name-of-artifact
+    #     path: dist/windows

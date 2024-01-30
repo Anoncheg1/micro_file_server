@@ -54,6 +54,7 @@ SMALL_TEXT_DO_NOT_DOWNLOAD = os.environ.get('FLASK_SMALL_TEXT_DO_NOT_DOWNLOAD', 
 SMALL_TEXT_ENCODING = os.environ.get('FLASK_SMALL_TEXT_ENCODING', 'utf-8')
 UPLOADING_ENABLED = os.environ.get('FLASK_UPLOADING_ENABLED', True)
 HIDE_HIDDEN = os.environ.get('FLASK_HIDE_HIDDEN', True)
+ALLOW_REWRITE = os.environ.get('ALLOW_REWRITE', True)
 
 IMAGE_UNICODE_FOLDER = b'\xF0\x9F\x93\x81'.decode('utf8')  # U+1F4C1
 IMAGE_UNICODE_FOLDER_OPEN = b'\xF0\x9F\x93\x82'.decode('utf8')  # U+1F4C2
@@ -268,7 +269,7 @@ def upload_file():
     filename = secure_filename(file.filename)
     save_file = os.path.join(save_path, filename)
     # check if file exist
-    if os.path.exists(save_file):
+    if not ALLOW_REWRITE and os.path.exists(save_file):
         return abort(Response('File already exist. Abort!', 400))
     # save
     file.save(save_file)
@@ -280,8 +281,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--port", action="store", default="8080")
     parser.add_argument("--host", action="store", default="0.0.0.0")
-    parser.add_argument("--cert", action="store", default=None)
-    parser.add_argument("--key", action="store", default=None)
+    parser.add_argument("--cert", action="store", default=None) # ".cert/cert.pem"
+    parser.add_argument("--key", action="store", default=None) # ".cert/key.pem"
     args = parser.parse_args()
     port = int(args.port)
     host = str(args.host)
