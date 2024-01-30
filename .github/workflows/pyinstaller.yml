@@ -24,6 +24,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install build
         pip install -r .github/requirements.txt
+        pip install pyinstaller
         # idk what is build
     - name: Run PyInstaller
       run: |
