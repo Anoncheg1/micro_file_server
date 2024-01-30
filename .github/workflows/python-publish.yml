@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Upload Python Package
+name: Release: exe, sourc and sourceforge
 
 on:
   release:
@@ -21,17 +21,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: relese
-        id: version_number
+      - name: Checkout
+      # uses: actions/checkout@v4
+      shell: bash
+      run: |
+        cd .. # because we are in repository_name already
+        git clone --no-tags --no-recurse-submodules --depth=1 \
+          --progress --single-branch --branch main \
+          https://github.com/Anoncheg1/micro_file_server
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+          pip install -r .github/requirements.txt
+          pip install pyinstaller
+          # idk what is build
+      - name: Run PyInstaller
+        run: |
+          pyinstaller --onefile --collect-all flask --name micro-file-server micro_file_server/__main__.py
+          sha512sum ./dist/micro-file-server.exe > ./dist/micro-file-server.exe.sha512
+      - name: Create a Release
+        env:
+          GH_TOKEN: ${{ github.token }} # secrets.GITHUB_TOKEN
         shell: bash
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/release/* ]] ; then
-            current_version=$( echo ${{ github.ref }} | cut -c19- )
-            echo "version_number=${current_version}" >> $GITHUB_OUTPUT
-          else
-            echo "::error ::Could not determine the version number using ref ${{ github.ref }}"
-            exit 1
-          fi
+          sha=${{ GITHUB.SHA }}
+          gh release create ${{ github.ref_name }} --generate-notes ./dist/*{.exe,.exe.sha512}
+        # if: startsWith(github.ref, 'refs/tags')
+
     # - uses: actions/checkout@v3
     # - name: Set up Python
     #   uses: actions/setup-python@v3
