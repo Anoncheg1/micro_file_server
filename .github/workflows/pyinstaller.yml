@@ -16,13 +16,10 @@ jobs:
       # uses: actions/checkout@v4
       shell: bash
       run: |
-        cd ..
+        cd .. # because we are in repository_name already
         git clone --no-tags --no-recurse-submodules --depth=1 \
           --progress --single-branch --branch main \
           https://github.com/Anoncheg1/micro_file_server
-        pwd
-        ls ./*
-        ls ./
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
@@ -45,7 +42,7 @@ jobs:
       shell: bash
       run: |
         ls ./*
-        gh release create "$(date +%Y%m%d-%H-%M-%S)" --generate-notes ./dist/*{.exe,.exe.sha512}
+        gh release create "$(date +%H:%Mm%SsUTC%Y-%m-%d)" --generate-notes ./dist/*{.exe,.exe.sha512}
         # ${{ GITHUB.SHA }} - Error, branch or tag names consisting of 40 hex characters are not allowed.
         # env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
