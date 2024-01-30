@@ -5,7 +5,7 @@
 # Author: Anoncheg1
 # Keywords: filesharing, fileserver, httpserver, simplehttp
 # URL: https://github.com/Anoncheg1/pinyin-isearch
-# Version: 0.1.1
+# Version: 0.1.2
 # Requires: Flask >= 2.3.2
 
 # License:
