@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-2019
 
     steps:
-    # - name: Checkout
+      # - name: Checkout
       uses: actions/checkout@v4
       run: |
         git clone --no-tags --no-recurse-submodules --depth=1 \
