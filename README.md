@@ -15,7 +15,7 @@
 
 Create Web server from current directory.
 
-HTTP server that allow to download and upload files.
+HTTP and HTTPS server that allow to download and upload files.
 
 Micro autoindex and file hosting server with one Flask framework dependence in single file.
 
@@ -27,14 +27,16 @@ Micro autoindex and file hosting server with one Flask framework dependence in s
 Allow to transfer files between systems easily and safely.
 
 -   ftp-like design
--   ability to uplaod file
+-   ability to upload file
 -   protection from folder escaping and injecting
 -   size calculation
 -   flexible configuration with enironmental variables
 -   optional basic file type recognition: text, image, audio, video
--   optional ability to prevent downloading of small files to use browser as a text reader.
+-   easy viewing text files by mime type faking.
 -   hiding files and directories that starts with '.' dot character.
--   all in a single file.
+-   HTTPS/TLS/SSL supported with cert and key files or with dynamic "adhoc" key.
+-   all in a single file: .py or .exe.
+
 
 <a id="org58f5941"></a>
 
@@ -99,4 +101,4 @@ or for HTTPS:
 certutil -hashfile "micro-file-server.exe" SHA512
 
 # Keywords
-Filesharing, fileserver, httpserver, microhttp.
+Filesharing, fileserver, httpserver, microhttp, simplehttp.
