@@ -34,7 +34,7 @@ jobs:
         GH_TOKEN: ${{ github.token }} # secrets.GITHUB_TOKEN github.token?
       shell: bash
       run: |
-        ls micro_file_server/*
+        ls ./*
         gh release create ${{ GITHUB.SHA }} --generate-notes micro_file_server/dist/*.exe
         # env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
