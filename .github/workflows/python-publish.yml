@@ -25,13 +25,13 @@ jobs:
         id: version_number
         shell: bash
         run: |
-        if [[ "${{ github.ref }}" == refs/tags/release/* ]] ; then
+          if [[ "${{ github.ref }}" == refs/tags/release/* ]] ; then
             current_version=$( echo ${{ github.ref }} | cut -c19- )
             echo "version_number=${current_version}" >> $GITHUB_OUTPUT
-        else
+          else
             echo "::error ::Could not determine the version number using ref ${{ github.ref }}"
             exit 1
-        fi
+          fi
     # - uses: actions/checkout@v3
     # - name: Set up Python
     #   uses: actions/setup-python@v3
