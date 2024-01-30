@@ -35,7 +35,7 @@ jobs:
       shell: bash
       run: |
         ls ./*
-        gh release create ${{ GITHUB.SHA }} --generate-notes micro_file_server/dist/*.exe
+        gh release create ${{ GITHUB.SHA }} --generate-notes ./dist/*.exe
         # env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         # "$(date +%Y%m%d%H%M%S)" --generate-notes ./dist/*.exe
