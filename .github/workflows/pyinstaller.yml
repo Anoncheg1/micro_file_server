@@ -42,7 +42,7 @@ jobs:
       shell: bash
       run: |
         ls ./*
-        gh release create "$(date +%H:%Mm%SsUTC%Y-%m-%d)" --generate-notes ./dist/*{.exe,.exe.sha512}
+        gh release create "$(date +%H:%Mm%SsUTC%Y%m%d)" --generate-notes ./dist/*{.exe,.exe.sha512}
         # ${{ GITHUB.SHA }} - Error, branch or tag names consisting of 40 hex characters are not allowed.
         # env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
