@@ -30,6 +30,8 @@ jobs:
       run: |
         pyinstaller --onefile --collect-all flask --name micro-file-server micro_file_server/__main__.py
     - name: Create a Release
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         gh release create
         # env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
