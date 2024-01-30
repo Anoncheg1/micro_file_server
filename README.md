@@ -52,7 +52,11 @@ Lower version may work as well.
 
     export FLASK_RUN_HOST=0.0.0.0 FLASK_RUN_PORT=8080
     export FLASK_BASE_DIR='/home/user'
-    python -m micro_file_server --host=0.0.0.0
+    python -m micro_file_server
+
+or
+
+    python -m micro_file_server --host 0.0.0.0 --port 8080
 or
 
     python micro_file_server/__main__.py
