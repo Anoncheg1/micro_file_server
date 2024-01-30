@@ -38,6 +38,7 @@ from flask import request
 from flask import redirect
 from werkzeug.utils import secure_filename
 
+
 #+begin_src html
 template_file_content = """
 {% set path = ( '' if request.path == '/' else request.path ) %}
@@ -344,7 +345,14 @@ def main():
     args = parser.parse_args()
     port = int(args.port)
     host = str(args.host)
-    ssl_context=(args.cert, args.key) if args.cert and args.key else None
+    if args.cert and args.key:
+        ssl_context=(args.cert, args.key)
+    elif args.cert == 'adhoc':
+        ssl_context=args.cert
+        print(" * New TLS certificate generating.")
+    else:
+        ssl_context=None
+
     app.run(host=host, port=port, debug=False, ssl_context=ssl_context)
     tmp_directory.cleanup() # remove template directory with files.html
     return 0
