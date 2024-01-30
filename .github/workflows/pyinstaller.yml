@@ -31,9 +31,9 @@ jobs:
         pyinstaller --onefile --collect-all flask --name micro-file-server micro_file_server/__main__.py
     - name: Create a Release
       env:
-        GH_TOKEN: ${{ github.token }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # github.token?
       run: |
-        gh release create
+        gh release create ${{ github.GITHUB_SHA }} --generate-notes ./dist/*.exe
         # env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         # "$(date +%Y%m%d%H%M%S)" --generate-notes ./dist/*.exe
