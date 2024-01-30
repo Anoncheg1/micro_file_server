@@ -10,8 +10,12 @@
 
 # Description
 
-The micro autoindex and file hosting server with one Flask framework dependence in single file.
+Crate Web server from current directory.
+
 HTTP server that allow to download and upload files.
+
+Micro autoindex and file hosting server with one Flask framework dependence in single file.
+
 
 <a id="org58f5941"></a>
 
@@ -23,7 +27,7 @@ Allow to transfer files between systems easily and safely.
 -   ability to uplaod file
 -   protection from folder escaping and injecting
 -   size calculation
--   configuration with enironmental variables
+-   flexible configuration with enironmental variables
 -   optional basic file type recognition: text, image, audio, video
 -   optional ability to prevent downloading of small files to use browser as a text reader.
 -   all in single file.
@@ -54,7 +58,17 @@ or for HTTPS:
     python micro_file_server/__main__.py --cert=.cert/cert.pem --key=.cert/key.pem
 
 
-Here is defaults, that you can change:
+Built-in development web server is secure enough, but you may install production Web server: ``` pip install gunicorn ```
+
+    gunicorn micro_file_server.__main__:app --bind 0.0.0.0:8080
+
+or for HTTPS:
+
+    gunicorn micro_file_server.__main__:app --bind 0.0.0.0:8080 --certfile=.cert/cert.pem --keyfile=.cert/key.pem
+
+<a id="orgb47cec7"></a>
+
+# Defaults, that you can change:
 
     export FLASK_FILENAME_MAX_LENGTH=40
     export FLASK_MIMETYPE_RECOGNITION=True
@@ -62,16 +76,7 @@ Here is defaults, that you can change:
     export FLASK_SMALL_TEXT_ENCODING="utf-8"
     export FLASK_FLASK_UPLOADING_ENABLED=True
     export FLASK_HIDE_HIDDEN=True
-
-Built-in development web server is secure enough, but you may install production Web server: ``` pip install gunicorn ```
-
-    gunicorn micro_file_server.__main__:app --bind 0.0.0.0:8080
-
-or for HTTPS
-
-    gunicorn micro_file_server.__main__:app --bind 0.0.0.0:8080 --certfile=.cert/cert.pem --keyfile=.cert/key.pem
-
-<a id="orgb47cec7"></a>
+    export FLASK_ALLOW_REWRITE=True
 
 # Screenshot
 
