@@ -7,7 +7,9 @@
 3.  [Dependencies](#orgb5d14b0)
 4.  [Usage](#org0fa2131)
 5.  [Default settings](#orgb47cec6)
-5.  [Screenshot](#orgb47cec7)
+6.  [Screenshot](#orgb47cec7)
+7.  [Check hash at MS Windows](#orgb47cec5)
+
 
 # Description
 
@@ -85,6 +87,12 @@ or for HTTPS:
 # Screenshot
 
 ![](https://github.com/Anoncheg1/micro_file_server/raw/main/Screenshot.png)
+
+<a id="orgb47cec5"></a>
+
+# Check hash at MS Windows
+
+certutil -hashfile "micro-file-server.exe" SHA512
 
 # Keywords
 Filesharing, fileserver, httpserver, microhttp.
