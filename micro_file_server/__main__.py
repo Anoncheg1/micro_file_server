@@ -40,7 +40,7 @@ from werkzeug.utils import secure_filename
 
 
 #+begin_src html
-template_file_content = """
+TEMPLATE_FILE_CONTENT = """
 {% set path = ( '' if request.path == '/' else request.path ) %}
 <table>
     <tr> <!-- table header -->
@@ -89,10 +89,11 @@ template_file_content = """
 #+end_src
 
 def save_template() -> TemporaryDirectory:
-    td = TemporaryDirectory()
+    "Create files.html template before starting web server."
+    td = TemporaryDirectory() # usually, template directory is located in RAM
     template_file_path = os.path.join(td.name, "files.html")
-    with open(template_file_path, "w") as tf:
-        tf.write(template_file_content)
+    with open(template_file_path, mode="w", encoding="utf-8") as tf:
+        tf.write(TEMPLATE_FILE_CONTENT)
     return td
 
 tmp_directory = save_template() # create tempalate_directory with html file
@@ -140,7 +141,7 @@ class OFile:
             self.shortname = filename
 
 
-def detect_mimetypes_smalltext(abs_path) -> None or str:
+def detect_mimetypes_smalltext(abs_path) -> None | str:
     """Return mimetype for small text files or None otherwise."""
     ftype = mimetypes.guess_type(abs_path)[0]
     if ftype is None:
@@ -236,7 +237,9 @@ def dir_listing(req_path):
     abs_path = os.path.join(BASE_DIR, os.path.normpath(req_path))
 
     if os.path.islink(abs_path):
-        return abort(Response('Links downloading and navigation disabled for security considerations.', 400))
+        return abort(Response('Links downloading and navigation '
+                              'disabled for security considerations.',
+                              400))
 
     path_basename = os.path.basename(abs_path)
 
