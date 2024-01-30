@@ -22,13 +22,12 @@ jobs:
 
     steps:
       - name: Checkout
-      # uses: actions/checkout@v4
-      shell: bash
-      run: |
-        cd .. # because we are in repository_name already
-        git clone --no-tags --no-recurse-submodules --depth=1 \
-          --progress --single-branch --branch main \
-          https://github.com/Anoncheg1/micro_file_server
+        shell: bash
+        run: |
+          cd .. # because we are in repository_name already
+          git clone --no-tags --no-recurse-submodules --depth=1 \
+            --progress --single-branch --branch main \
+            https://github.com/Anoncheg1/micro_file_server
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
