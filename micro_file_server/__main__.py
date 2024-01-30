@@ -338,10 +338,14 @@ def upload_file():
 def main():
     "Run Flask with"
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--port", action="store", default="8080")
-    parser.add_argument("--host", action="store", default="0.0.0.0")
-    parser.add_argument("--cert", action="store", default=None) # ".cert/cert.pem"
-    parser.add_argument("--key", action="store", default=None) # ".cert/key.pem"
+    parser.add_argument("-p", "--port", action="store", default="8080",
+                        help="Port number.")
+    parser.add_argument("--host", action="store", default="0.0.0.0",
+                        help="IP address of the internet interface.")
+    parser.add_argument("--cert", action="store", default=None,
+                        help="for ex: .cert/cert.pem")
+    parser.add_argument("--key", action="store", default=None,
+                        help="for ex: .cert/key.pem")
     args = parser.parse_args()
     port = int(args.port)
     host = str(args.host)

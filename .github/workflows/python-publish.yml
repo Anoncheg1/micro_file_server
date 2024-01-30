@@ -81,15 +81,15 @@ jobs:
           # idk what is build
       - name: Run PyInstaller
         run: |
-          pyinstaller --onefile --collect-all flask --name micro-file-server micro_file_server/__main__.py
-          sha512sum ./dist/micro-file-server > ./dist/micro-file-server.sha512.txt
+          pyinstaller --onefile --collect-all flask --name micro-file-server-ubuntu micro_file_server/__main__.py
+          sha512sum ./dist/micro-file-server-ubuntu > ./dist/micro-file-server-ubuntu.sha512.txt
       - name: Create a Release
         env:
           GH_TOKEN: ${{ github.token }} # secrets.GITHUB_TOKEN
         shell: bash
         run: |
           sha=${{ GITHUB.SHA }}
-          gh release upload ${{ github.ref_name }} ./dist/micro-file-server ./dist/micro-file-server.sha512.txt
+          gh release upload ${{ github.ref_name }} ./dist/micro-file-server-ubuntu ./dist/micro-file-server-ubuntu.sha512.txt
 
         # if: startsWith(github.ref, 'refs/tags')
 
