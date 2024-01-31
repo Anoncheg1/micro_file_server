@@ -43,7 +43,7 @@ jobs:
           # idk what is build
       - name: Run PyInstaller
         run: |
-          pyinstaller --onefile --collect-all flask --name micro-file-server micro_file_server/__main__.py
+          pyinstaller --onefile --collect-all flask --name micro-file-server --icon .github/out.ico micro_file_server/__main__.py
           sha512sum ./dist/micro-file-server.exe > ./dist/micro-file-server.exe.sha512.txt
       - name: Create a Release
         env:
@@ -81,7 +81,7 @@ jobs:
           # idk what is build
       - name: Run PyInstaller
         run: |
-          pyinstaller --onefile --collect-all flask --name micro-file-server-ubuntu micro_file_server/__main__.py
+          pyinstaller --onefile --collect-all flask --name micro-file-server-ubuntu --icon .github/out.ico micro_file_server/__main__.py
           sha512sum ./dist/micro-file-server-ubuntu > ./dist/micro-file-server-ubuntu.sha512.txt
       - name: Create a Release
         env:
@@ -117,7 +117,7 @@ jobs:
           # idk what is build
       - name: Run PyInstaller
         run: |
-          pyinstaller --onefile --collect-all flask --name micro-file-server-macos micro_file_server/__main__.py
+          pyinstaller --onefile --collect-all flask --name micro-file-server-macos --icon .github/out.icns micro_file_server/__main__.py
           shasum -a 512 ./dist/micro-file-server-macos > ./dist/micro-file-server-macos.sha512.txt
       - name: Create a Release
         env:
