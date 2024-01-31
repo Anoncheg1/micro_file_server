@@ -8,7 +8,7 @@
 4.  [Usage](#org0fa2131)
 5.  [Default settings](#orgb47cec6)
 6.  [Screenshot](#orgb47cec7)
-7.  [Check hash at MS Windows](#orgb47cec5)
+7.  [Check hash](#orgb47cec5)
 
 
 # Description
@@ -95,9 +95,13 @@ or for HTTPS:
 
 <a id="orgb47cec5"></a>
 
-# Check hash at MS Windows
+# Check hash
 
-certutil -hashfile "micro-file-server.exe" SHA512
+MS Windows: ``` certutil -hashfile "micro-file-server.exe" SHA512 ```
+
+at Ubuntu: ``` sha512sum micro-file-server ```
+
+at MacOS: ```shasum -a 512 micro-file-server-macos ```
 
 # Keywords
 Filesharing, fileserver, httpserver, microhttp, simplehttp.
