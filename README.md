@@ -19,7 +19,6 @@ HTTP and HTTPS server that allow to download and upload files.
 
 Micro autoindex and file hosting server with one Flask framework dependence in single file.
 
-
 <a id="org58f5941"></a>
 
 # Features:
