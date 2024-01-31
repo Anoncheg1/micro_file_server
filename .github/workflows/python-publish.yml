@@ -83,13 +83,14 @@ jobs:
         run: |
           pyinstaller --onefile --collect-all flask --name micro-file-server-ubuntu --icon .github/out.ico micro_file_server/__main__.py
           sha512sum ./dist/micro-file-server-ubuntu > ./dist/micro-file-server-ubuntu.sha512.txt
+          cp micro_file_server/__main__.py micro-main.py
       - name: Create a Release
         env:
           GH_TOKEN: ${{ github.token }} # secrets.GITHUB_TOKEN
         shell: bash
         run: |
           sha=${{ GITHUB.SHA }}
-          gh release upload ${{ github.ref_name }} ./dist/micro-file-server-ubuntu ./dist/micro-file-server-ubuntu.sha512.txt
+          gh release upload ${{ github.ref_name }} ./dist/micro-file-server-ubuntu ./dist/micro-file-server-ubuntu.sha512.txt micro-main.py
 
   build-macos:
     # runs-on: windows-2019
