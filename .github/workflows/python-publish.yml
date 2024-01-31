@@ -118,7 +118,7 @@ jobs:
           # idk what is build
       - name: Run PyInstaller
         run: |
-          pyinstaller --onefile --collect-all flask --name micro-file-server-ubuntu micro_file_server/__main__.py
+          pyinstaller --onefile --collect-all flask --name micro-file-server-macos micro_file_server/__main__.py
           sha512sum ./dist/micro-file-server-macos > ./dist/micro-file-server-macos.sha512.txt
       - name: Create a Release
         env:
