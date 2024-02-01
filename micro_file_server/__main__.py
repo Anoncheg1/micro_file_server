@@ -4,9 +4,9 @@
 
 # Author: Anoncheg1
 # Keywords: filesharing, fileserver, httpserver, simplehttp
-# URL: https://github.com/Anoncheg1/pinyin-isearch
-# Version: 0.1.3
-# Requires: Flask >= 2.3.2
+# URL: https://github.com/Anoncheg1/micro_file_server
+# Version: 0.1.4
+# Requires: Flask >= 2.3.2 # use: $ pip install Flask
 
 # License:
 # This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,8 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 
 import os
 import datetime
