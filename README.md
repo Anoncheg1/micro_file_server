@@ -45,6 +45,8 @@ Python version >= 3.10
 
 Flask >= 2.3.2 ``` pip install flask ```
 
+cryptography >= 41.0.4 ``` pip install cryptography ``` optionally required for TLS --cert
+
 Lower version may work as well.
 
 <a id="org0fa2131"></a>

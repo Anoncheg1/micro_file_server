@@ -22,6 +22,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+tls = [
+    "cryptography >= 41.0.4"
+]
 test = [
     "pytest"
 ]
