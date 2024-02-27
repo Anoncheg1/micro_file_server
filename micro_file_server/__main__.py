@@ -25,6 +25,7 @@
 
 
 import os
+import platform
 import datetime
 import mimetypes
 import subprocess
@@ -158,8 +159,15 @@ def detect_mimetypes_file_command(abs_path: str) -> None | str:
     # additional safely check
     if not os.path.exists(abs_path):
         return None
+
+    system = platform.system() # 'Linux', 'Darwin', 'Java', 'Windows'
+    if system != 'Linux' and system != 'Darwin':
+        return None
+
     try:
-        r = subprocess.run(["file", "-ib", abs_path], capture_output=True,
+        r = subprocess.run(["file",
+                            "-i" if system == 'Linux' else "-I", # Darwin
+                            abs_path], capture_output=True,
                        check=True)
     except (FileNotFoundError, subprocess.CalledProcessError) as e:
         app.logger.exception("Error occurred while executing file"
@@ -167,7 +175,7 @@ def detect_mimetypes_file_command(abs_path: str) -> None | str:
         return None
 
     res = r.stdout.decode('ascii').strip()
-    if "text/" in res:
+    if res.split(":")[1].split(";")[0].lstrip().startswith("text"):
         return res
     return None
 
