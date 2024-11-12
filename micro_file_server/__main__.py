@@ -42,7 +42,7 @@ from flask import make_response
 from flask import request
 from flask import redirect
 from werkzeug.utils import secure_filename
-
+import logging
 # {{{ - jinja template
 #+begin_src html
 TEMPLATE_FILE_CONTENT = """
@@ -108,15 +108,24 @@ def save_template() -> TemporaryDirectory:
 def check_write_permissions(dst):
     try:
         # Attempt to create a temporary file in the destination directory
-        with TemporaryFile(dir=dst) as tmp:
+        with TemporaryFile(dir=dst):
             pass  # If we get here, we have write permissions
         return True
     except OSError:
         # If we get an OSError, it means we don't have write permissions
         return False
 
-# {{{ - Flask initialization
+# {{{ - Suppress - code 400, message Bad request version - TLS error
 
+
+class IgnoreBadRequestVersionFilter(logging.Filter):
+    def filter(self, record):
+        return 'Bad request version' not in record.getMessage()
+
+
+logging.getLogger('werkzeug').addFilter(IgnoreBadRequestVersionFilter())
+
+# {{{ - Flask initialization
 
 tmp_directory = save_template()  # create tempalate_directory with html file
 
@@ -380,6 +389,7 @@ def upload_file():
     return redirect(request.form['location']) # 200
 
 # {{{ - main
+
 
 def main():
     "Run Flask with arguments."
