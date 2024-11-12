@@ -1,4 +1,5 @@
 """Module providing a main file of micro_file_server package."""
+# {{{ - header
 # This is http server that allow to download and upload files.
 # Copyright (c) 2024 Anoncheg1
 
@@ -23,6 +24,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+# {{{ - imports
 
 import os
 import platform
@@ -41,7 +43,7 @@ from flask import request
 from flask import redirect
 from werkzeug.utils import secure_filename
 
-
+# {{{ - jinja template
 #+begin_src html
 TEMPLATE_FILE_CONTENT = """
 {% set path = ( '' if request.path == '/' else request.path ) %}
@@ -91,24 +93,28 @@ TEMPLATE_FILE_CONTENT = """
 """
 #+end_src
 
+
 def save_template() -> TemporaryDirectory:
     "Create files.html template before starting web server."
-    td = TemporaryDirectory() # usually, template directory is located in RAM
+    td = TemporaryDirectory()  # usually, template directory is located in RAM
     template_file_path = os.path.join(td.name, "files.html")
     with open(template_file_path, mode="w", encoding="utf-8") as tf:
         tf.write(TEMPLATE_FILE_CONTENT)
     return td
 
-tmp_directory = save_template() # create tempalate_directory with html file
+# {{{ - Flask initialization
+
+
+tmp_directory = save_template()  # create tempalate_directory with html file
 
 app = Flask(__name__, static_folder=None, template_folder=tmp_directory.name)
 
 app.jinja_env.filters['path_join'] = os.path.join
 
-##########################
-# FLASK_* configurations,
+# {{{ - FLASK_* configurations,
+
 # use $ export FLASK_BASE_DIR='/home' ; flask --app main --no-debug run
-##########################
+
 BASE_DIR = os.environ.get('FLASK_BASE_DIR', os.getcwd())  # current directory by default
 app.logger.info("BASE_DIR: %s", BASE_DIR)
 FILENAME_MAX_LENGTH = os.environ.get('FLASK_FILENAME_MAX_LENGTH', 40)
@@ -127,6 +133,8 @@ IMAGE_UNICODE_VIDEO = b'\xF0\x9F\x8E\xA5'.decode('utf8')  # U+1F3A5
 IMAGE_UNICODE_AUDIO = b'\xF0\x9F\x8E\xA7'.decode('utf8')  # U+1F3A7
 IMAGE_UNICODE_TEXT = b'\xF0\x9F\x97\x92'.decode('utf8')  # U+1F5D2
 
+# {{{ - utils
+
 
 class OFile:
     """Create input object for jinja template."""
@@ -144,7 +152,7 @@ class OFile:
             self.shortname = filename
 
 
-def detect_mimetypes_smalltext(abs_path) -> None | str:
+def detect_mimetypes_smalltext(abs_path: str) -> None | str:
     """Return mimetype for small text files or None otherwise."""
     ftype = mimetypes.guess_type(abs_path)[0]
     if ftype is None:
@@ -160,7 +168,7 @@ def detect_mimetypes_file_command(abs_path: str) -> None | str:
     if not os.path.exists(abs_path):
         return None
 
-    system = platform.system() # 'Linux', 'Darwin', 'Java', 'Windows'
+    system = platform.system()  # 'Linux', 'Darwin', 'Java', 'Windows'
     if system != 'Linux' and system != 'Darwin':
         return None
 
@@ -168,7 +176,7 @@ def detect_mimetypes_file_command(abs_path: str) -> None | str:
         r = subprocess.run(["file",
                             "-i" if system == 'Linux' else "-I", # Darwin
                             abs_path], capture_output=True,
-                       check=True)
+                           check=True)
     except (FileNotFoundError, subprocess.CalledProcessError) as e:
         app.logger.exception("Error occurred while executing file"
                              " command on file: %s. %s", abs_path,  e)
@@ -180,7 +188,7 @@ def detect_mimetypes_file_command(abs_path: str) -> None | str:
     return None
 
 
-def get_filetype_images(abs_path, files) -> Iterator[str]:
+def get_filetype_images(abs_path: str, files: list[str]) -> Iterator[str]:
     """List of unicode characters to describe file type."""
 
     for fn in files:
@@ -212,7 +220,7 @@ def get_filetype_images(abs_path, files) -> Iterator[str]:
         yield img
 
 
-def get_last_modified(abs_path, files) -> Iterator[str]:
+def get_last_modified(abs_path: str, files: list[str]) -> Iterator[str]:
     "Get mtime of files."
     for f in files:
         mtime_since_epoch = os.path.getmtime(os.path.join(abs_path, f))
@@ -222,7 +230,7 @@ def get_last_modified(abs_path, files) -> Iterator[str]:
 _SZ_UNITS = ['Byte', 'KB', 'MB', 'GB']
 
 
-def get_sizes(abs_path, files) -> Iterator[str]:
+def get_sizes(abs_path: str, files: list[str]) -> Iterator[str]:
     "Get size of file as a string with: Byte, KB, MB, GB suffix."
     for name in files:
         p = os.path.join(abs_path, name)
@@ -239,9 +247,10 @@ def get_sizes(abs_path, files) -> Iterator[str]:
         yield size
 
 
+# {{{ - Flask routines
 @app.route('/', defaults={'req_path': ''})
 @app.route('/<path:req_path>')
-def dir_listing(req_path):
+def dir_listing(req_path: str):
     "List files in directory for HTTP GET request."
     # Joining the base and the requested path
     abs_path = os.path.join(BASE_DIR, os.path.normpath(req_path))
@@ -347,6 +356,7 @@ def upload_file():
     file.save(save_file)
     return redirect(request.form['location']) # 200
 
+# {{{ - main
 
 def main():
     "Run Flask with"
@@ -363,17 +373,16 @@ def main():
     port = int(args.port)
     host = str(args.host)
     if args.cert and args.key:
-        ssl_context=(args.cert, args.key)
+        ssl_context = (args.cert, args.key)
     elif args.cert == 'adhoc':
-        ssl_context=args.cert
+        ssl_context = args.cert
         print(" * New TLS certificate generating.")
     else:
-        ssl_context=None
+        ssl_context = None
 
     app.run(host=host, port=port, debug=False, ssl_context=ssl_context)
-    tmp_directory.cleanup() # remove template directory with files.html
+    tmp_directory.cleanup()  # remove template directory with files.html
     return 0
-
 
 if __name__ == "__main__":
     main()
