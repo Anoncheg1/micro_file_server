@@ -42,7 +42,7 @@ from flask import make_response
 from flask import request
 from flask import redirect
 from werkzeug.utils import secure_filename
-
+import logging
 # {{{ - jinja template
 #+begin_src html
 TEMPLATE_FILE_CONTENT = """
@@ -108,7 +108,7 @@ def save_template() -> TemporaryDirectory:
 def check_write_permissions(dst):
     try:
         # Attempt to create a temporary file in the destination directory
-        with TemporaryFile(dir=dst) as tmp:
+        with TemporaryFile(dir=dst):
             pass  # If we get here, we have write permissions
         return True
     except OSError:
@@ -116,7 +116,6 @@ def check_write_permissions(dst):
         return False
 
 # {{{ - Flask initialization
-
 
 tmp_directory = save_template()  # create tempalate_directory with html file
 
@@ -146,7 +145,8 @@ MIMETYPE_RECOGNITION = os.environ.get('FLASK_MIMETYPE_RECOGNITION', True)
 SMALL_TEXT_DO_NOT_DOWNLOAD = os.environ.get('FLASK_SMALL_TEXT_DO_NOT_DOWNLOAD', True)
 SMALL_TEXT_ENCODING = os.environ.get('FLASK_SMALL_TEXT_ENCODING', 'utf-8')
 HIDE_HIDDEN = os.environ.get('FLASK_HIDE_HIDDEN', True)
-ALLOW_REWRITE = os.environ.get('ALLOW_REWRITE', True)
+ALLOW_REWRITE = os.environ.get('FLASK_ALLOW_REWRITE', True)
+SUPPRESS_400 = os.environ.get('FLASK_SUPPRESS_400', True)
 
 IMAGE_UNICODE_FOLDER = b'\xF0\x9F\x93\x81'.decode('utf8')  # U+1F4C1
 IMAGE_UNICODE_FOLDER_OPEN = b'\xF0\x9F\x93\x82'.decode('utf8')  # U+1F4C2
@@ -155,6 +155,17 @@ IMAGE_UNICODE_IMAGE = b'\xF0\x9F\x96\xBC'.decode('utf8')  # U+1F5BC
 IMAGE_UNICODE_VIDEO = b'\xF0\x9F\x8E\xA5'.decode('utf8')  # U+1F3A5
 IMAGE_UNICODE_AUDIO = b'\xF0\x9F\x8E\xA7'.decode('utf8')  # U+1F3A7
 IMAGE_UNICODE_TEXT = b'\xF0\x9F\x97\x92'.decode('utf8')  # U+1F5D2
+
+# {{{ - Suppress - code 400, message Bad request version - TLS error
+
+
+class IgnoreBadRequestVersionFilter(logging.Filter):
+    def filter(self, record):
+        return '400' not in record.getMessage()
+
+
+if SUPPRESS_400:
+    logging.getLogger('werkzeug').addFilter(IgnoreBadRequestVersionFilter())
 
 # {{{ - utils
 
@@ -380,6 +391,7 @@ def upload_file():
     return redirect(request.form['location']) # 200
 
 # {{{ - main
+
 
 def main():
     "Run Flask with arguments."
