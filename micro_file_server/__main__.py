@@ -131,15 +131,20 @@ app.jinja_env.filters['path_join'] = os.path.join
 BASE_DIR = os.environ.get('FLASK_BASE_DIR', os.getcwd())  # current directory by default
 print("---- BASE_DIR:", BASE_DIR)
 
-UPLOADING_ENABLED = check_write_permissions(BASE_DIR)
-if not UPLOADING_ENABLED:
-    print('---- Warning: directory without write permissions, uploading disabled.')
+# - check permission, print warning and enable/disable uploading accordingly.
+UPLOADING_ENABLED = os.environ.get('FLASK_UPLOADING_ENABLED', None)
+if not check_write_permissions(BASE_DIR):
+    if UPLOADING_ENABLED is None:
+        st = ', uploading disabled'
+        UPLOADING_ENABLED = False
+    else:
+        st = ''
+    print(f'---- Warning: directory without write permissions{st}.')
 
 FILENAME_MAX_LENGTH = os.environ.get('FLASK_FILENAME_MAX_LENGTH', 40)
 MIMETYPE_RECOGNITION = os.environ.get('FLASK_MIMETYPE_RECOGNITION', True)
 SMALL_TEXT_DO_NOT_DOWNLOAD = os.environ.get('FLASK_SMALL_TEXT_DO_NOT_DOWNLOAD', True)
 SMALL_TEXT_ENCODING = os.environ.get('FLASK_SMALL_TEXT_ENCODING', 'utf-8')
-UPLOADING_ENABLED = os.environ.get('FLASK_UPLOADING_ENABLED', UPLOADING_ENABLED)
 HIDE_HIDDEN = os.environ.get('FLASK_HIDE_HIDDEN', True)
 ALLOW_REWRITE = os.environ.get('ALLOW_REWRITE', True)
 
