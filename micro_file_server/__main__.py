@@ -33,7 +33,7 @@ import mimetypes
 import subprocess
 import argparse
 from typing import Iterator
-from tempfile import TemporaryDirectory
+from tempfile import TemporaryDirectory, TemporaryFile
 from flask import Flask, Response
 from flask import render_template
 from flask import abort
@@ -87,8 +87,10 @@ TEMPLATE_FILE_CONTENT = """
 <form action="/upload" method=post enctype=multipart/form-data>
     <p><input type=file name=file>
         <input type="hidden" name="location" value="{{request.path}}">
-        <input type=submit value=Upload>
+        <input type=submit value=Upload></p>
 </form>
+{% else %}
+<p>Uploading disabled.</p>
 {% endif %}
 """
 #+end_src
@@ -102,6 +104,17 @@ def save_template() -> TemporaryDirectory:
         tf.write(TEMPLATE_FILE_CONTENT)
     return td
 
+
+def check_write_permissions(dst):
+    try:
+        # Attempt to create a temporary file in the destination directory
+        with TemporaryFile(dir=dst) as tmp:
+            pass  # If we get here, we have write permissions
+        return True
+    except OSError:
+        # If we get an OSError, it means we don't have write permissions
+        return False
+
 # {{{ - Flask initialization
 
 
@@ -111,17 +124,22 @@ app = Flask(__name__, static_folder=None, template_folder=tmp_directory.name)
 
 app.jinja_env.filters['path_join'] = os.path.join
 
-# {{{ - FLASK_* configurations,
+# {{{ - For FLASK_* configurations,
 
 # use $ export FLASK_BASE_DIR='/home' ; flask --app main --no-debug run
 
 BASE_DIR = os.environ.get('FLASK_BASE_DIR', os.getcwd())  # current directory by default
-app.logger.info("BASE_DIR: %s", BASE_DIR)
+print("---- BASE_DIR:", BASE_DIR)
+
+UPLOADING_ENABLED = check_write_permissions(BASE_DIR)
+if not UPLOADING_ENABLED:
+    print('---- Warning: directory without write permissions, uploading disabled.')
+
 FILENAME_MAX_LENGTH = os.environ.get('FLASK_FILENAME_MAX_LENGTH', 40)
 MIMETYPE_RECOGNITION = os.environ.get('FLASK_MIMETYPE_RECOGNITION', True)
 SMALL_TEXT_DO_NOT_DOWNLOAD = os.environ.get('FLASK_SMALL_TEXT_DO_NOT_DOWNLOAD', True)
 SMALL_TEXT_ENCODING = os.environ.get('FLASK_SMALL_TEXT_ENCODING', 'utf-8')
-UPLOADING_ENABLED = os.environ.get('FLASK_UPLOADING_ENABLED', True)
+UPLOADING_ENABLED = os.environ.get('FLASK_UPLOADING_ENABLED', UPLOADING_ENABLED)
 HIDE_HIDDEN = os.environ.get('FLASK_HIDE_HIDDEN', True)
 ALLOW_REWRITE = os.environ.get('ALLOW_REWRITE', True)
 
@@ -359,7 +377,7 @@ def upload_file():
 # {{{ - main
 
 def main():
-    "Run Flask with"
+    "Run Flask with arguments."
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--port", action="store", default="8080",
                         help="Port number.")
@@ -379,6 +397,10 @@ def main():
         print(" * New TLS certificate generating.")
     else:
         ssl_context = None
+
+    # if not check_write_permissions(BASE_DIR):
+    #     app.logger.info(f'Warning: directory without write permissions "{BASE_DIR}"')
+    #     # print(f'Warning: directory without write permissions "{BASE_DIR}"')
 
     app.run(host=host, port=port, debug=False, ssl_context=ssl_context)
     tmp_directory.cleanup()  # remove template directory with files.html
