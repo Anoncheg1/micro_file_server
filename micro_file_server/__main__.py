@@ -115,8 +115,6 @@ def check_write_permissions(dst):
         # If we get an OSError, it means we don't have write permissions
         return False
 
-# {{{ - Flask initialization
-
 tmp_directory = save_template()  # create tempalate_directory with html file
 
 app = Flask(__name__, static_folder=None, template_folder=tmp_directory.name)
