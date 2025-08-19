@@ -53,9 +53,8 @@ Lower version may work as well.
 
 # Usage
 
-    export FLASK_RUN_HOST=0.0.0.0 FLASK_RUN_PORT=8080
-    export FLASK_BASE_DIR='/home/user'
-    python -m micro_file_server
+    cd downloads
+    python micro_file_server/__main__.py --cert=.cert/cert.pem --key=.cert/key.pem
 
 or
 
@@ -64,9 +63,11 @@ or
 
     python micro_file_server/__main__.py
 
-or for HTTPS:
+or
+    export FLASK_RUN_HOST=0.0.0.0 FLASK_RUN_PORT=8080
+    export FLASK_BASE_DIR='/home/user'
+    python -m micro_file_server
 
-    python micro_file_server/__main__.py --cert=.cert/cert.pem --key=.cert/key.pem
 
 
 Built-in development web server is secure enough, but you may install production Web server: ``` pip install gunicorn ```
