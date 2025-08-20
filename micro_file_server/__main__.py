@@ -128,8 +128,23 @@ app.jinja_env.filters['path_join'] = os.path.join
 BASE_DIR = os.environ.get('FLASK_BASE_DIR', os.getcwd())  # current directory by default
 print("---- BASE_DIR:", BASE_DIR)
 
+# - Parsing CLI arguments here for UPLOADING_ENABLED variable only
+parser = argparse.ArgumentParser()
+parser.add_argument("-p", "--port", action="store", default="8080",
+                    help="Port number.")
+parser.add_argument("--host", action="store", default="0.0.0.0",
+                    help="IP address of the internet interface.")
+parser.add_argument("--cert", action="store", default=None,
+                    help="\"adhoc\" for dynamic TLS or path to file, for ex: .cert/cert.pem")
+parser.add_argument("--key", action="store", default=None,
+                    help="Private key, for ex: .cert/key.pem")
+parser.add_argument("-u", "--upload", action='store_true', default=None,
+                    help='Enable uploading.')
+args = parser.parse_args()
+
+
 # - check permission, print warning and enable/disable uploading accordingly.
-UPLOADING_ENABLED = os.environ.get('FLASK_UPLOADING_ENABLED', None)
+UPLOADING_ENABLED = os.environ.get('FLASK_UPLOADING_ENABLED', args.upload)
 if not check_write_permissions(BASE_DIR):
     if UPLOADING_ENABLED is None:
         st = ', uploading disabled'
@@ -137,6 +152,9 @@ if not check_write_permissions(BASE_DIR):
     else:
         st = ''
     print(f'---- Warning: directory without write permissions{st}.')
+
+if UPLOADING_ENABLED:
+    print('-- Uploading allowed.')
 
 FILENAME_MAX_LENGTH = os.environ.get('FLASK_FILENAME_MAX_LENGTH', 40)
 MIMETYPE_RECOGNITION = os.environ.get('FLASK_MIMETYPE_RECOGNITION', True)
@@ -393,16 +411,6 @@ def upload_file():
 
 def main():
     "Run Flask with arguments."
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--port", action="store", default="8080",
-                        help="Port number.")
-    parser.add_argument("--host", action="store", default="0.0.0.0",
-                        help="IP address of the internet interface.")
-    parser.add_argument("--cert", action="store", default=None,
-                        help="\"adhoc\" for dynamic TLS or path to file, for ex: .cert/cert.pem")
-    parser.add_argument("--key", action="store", default=None,
-                        help="Private key, for ex: .cert/key.pem")
-    args = parser.parse_args()
     port = int(args.port)
     host = str(args.host)
     if args.cert and args.key:
